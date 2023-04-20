@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+</head>
+<body>
+    <%- include('partials/nav.ejs') %>
+    <main>
+        <div class="container agendamento">
+            <table>
+                <tr>
+                    <th>Medico</th>
+                    <th>Paciente</th>
+                    <th>Sala</th>
+                    <th>Data</th>
+                </tr>
+                <% agents.forEach(agent => { %>
+                    <tr>
+                        <td><%= agent.medic %></td>
+                        <td><%= agent.patient %></td>
+                        <td><%= agent.room %></td>
+                        <td><%= agent.date.split(' ')[0].replaceAll('-','/') %></td>
+                    </tr>
+                <% }) %>
+            </table>
+        </div>
+        <div class="container">
+            <a href="/agendamento"><button class="submit">novo agendamento</button></a>
+        </div>
+    </main>
+</body>
+</html>

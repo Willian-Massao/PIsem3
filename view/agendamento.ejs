@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <h1>Cadastro</h1>
+        <form action="/agendamento" method="post">
+          <div class="listbox">
+            <label for="medic">Medico:</label>
+            <select name="medic" id="listbox">
+              <% results.forEach(user => { %>
+                <option value="<%= user.id %>"> <%= user.Name %> </option>  
+              <% }) %>
+            </select>
+          </div>
+          <div class="listbox">
+            <label for="patient">Paciente:</label>
+            <select name="patient" id="patient">
+              <% results.forEach(user => { %>
+                <option value="<%= user.id %>"> <%= user.Name %> </option>  
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="room">Sala:</label>
+            <input type="text" id="room" name="room">
+          </div>
+          <div class="form-group">
+            <label for="date">Data:</label>
+            <input type="date" id="date" name="date">
+          </div>
+          <button type="submit">Criar agendamento</button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
