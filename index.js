@@ -100,6 +100,9 @@ app.post('/register', (req, res) => {
     const crm = req.body.crm;
     const esp = req.body.specialization;
     const BornDate = req.body.bornDate;
+    const isMedic = req.body.has_crm == "on" ? true : false;
+
+    console.log(req.body);
 
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, (err, hash) => {
@@ -113,7 +116,8 @@ app.post('/register', (req, res) => {
                 RG: rg,
                 CRM: crm,
                 Esp: esp,
-                BornDate: BornDate
+                BornDate: BornDate,
+                isMedic: isMedic
             }).then(user => {
                 req.login(user, (err) => {
                     if (err) {
@@ -132,18 +136,53 @@ app.post('/register', (req, res) => {
 }); 
 
 app.post('/agendamento', (req, res) => {
-
-    AgentModel.create({
-        medic: req.body.medic,
-        patient: req.body.patient,
-        room: req.body.room,
-        date: req.body.date,
-    }).then(agent => {
-        res.redirect('/');
-    })
-    .catch(err => {
+    const data = req.body;
+    const date = data.date + "T" + data.time + ":00.000Z";
+    UserModel.findOne({ where: { id: data.medic }}).then(medic => {
+        console.log(medic);
+        console.log(req.body);
+        AgentModel.create({
+            medic: req.body.medic,
+            patient: req.body.patient,
+            Esp: medic.Esp,
+            room: req.body.room,
+            date: date,
+        }).then(agent => {
+            res.redirect('/');
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }).catch(err => {
         console.log(err);
-        return res.render('agendamento');
+    });
+});
+
+app.post('/edit/profile', (req, res) => {
+    let data = req.body;
+
+    UserModel.update({
+        Name: data.name,
+        Login: data.email,
+        Address: data.address,
+        CPF: data.cpf,
+        RG: data.rg,
+        CRM: data.crm,
+        Esp: data.specialization,
+        BornDate: data.bornDate
+    }, {
+        where: {
+            id: req.user.id
+        }
+    }).then(user => {
+        res.redirect('/');
+    });
+});
+
+app.post("/logout", (req, res) => {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/login');
     });
 });
 
@@ -164,6 +203,7 @@ app.get('/', ensureAuthenticated, (req, res) => {
                 agent.medic = users.find(user => user.id == agent.medic).Name;
                 agent.patient = users.find(user => user.id == agent.patient).Name;
             });
+            console.log(agents[0]);
             res.render('home', {agents: agents[0]});
         });
 
@@ -179,9 +219,8 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 app.get('/agendamento', ensureAuthenticated, async (req, res) => {
     const results = await UserModel.findAll({
         raw: true,
-        attributes: ['id', 'Name'],
+        attributes: ['id', 'Name', 'isMedic'],
     });
-
     res.render('agendamento', { results });
 });
 

@@ -10,27 +10,25 @@
 <body>
     <%- include('partials/nav.ejs') %>
     <main>
-        <div class="container agendamento">
-            <table>
+        <table>
+            <tr>
+                <th>Medico</th>
+                <th>Paciente</th>
+                <th>Especialização</th>
+                <th>Sala</th>
+                <th>Data</th>
+            </tr>
+            <% agents.forEach(agent => { %>
                 <tr>
-                    <th>Medico</th>
-                    <th>Paciente</th>
-                    <th>Sala</th>
-                    <th>Data</th>
+                    <td><%= agent.medic %></td>
+                    <td><%= agent.patient %></td>
+                    <td><%= agent.Esp %></td>
+                    <td><%= agent.room %></td>
+                    <td><%= agent.date.split(' ')[0].replaceAll('-','/') %> as <%= agent.date.split(' ')[1].replace(":00.000", "") %></td>
                 </tr>
-                <% agents.forEach(agent => { %>
-                    <tr>
-                        <td><%= agent.medic %></td>
-                        <td><%= agent.patient %></td>
-                        <td><%= agent.room %></td>
-                        <td><%= agent.date.split(' ')[0].replaceAll('-','/') %></td>
-                    </tr>
-                <% }) %>
-            </table>
-        </div>
-        <div class="container">
-            <a href="/agendamento"><button class="submit">novo agendamento</button></a>
-        </div>
+            <% }) %>
+        </table>
+        <a href="/agendamento"><button class="submit">novo agendamento</button></a>
     </main>
 </body>
 </html>

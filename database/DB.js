@@ -44,11 +44,19 @@ UserModel.init({
     Esp: {
         type: Sequelize.STRING,
         allowNull: true
+    },
+    isMedic: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 }, { sequelize: connection, modelName: 'Users'});
 
 AgentModel.init({
     medic: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    Esp: {
         type: Sequelize.STRING,
         allowNull: false
     },
