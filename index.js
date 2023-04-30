@@ -198,6 +198,20 @@ app.post("/logout", (req, res) => {
     });
 });
 
+app.post("/delete", ensureAuthenticated, (req, res)=>{
+    const room = req.body.room;
+    const date = req.body.date;
+
+    AgentModel.destroy({
+        where: {
+            room: room,
+            date: date
+        }
+    }).then(() => {
+        res.redirect('/');
+    });
+});
+
 // get
 
 app.get('/login', (req, res) => {

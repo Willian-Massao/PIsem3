@@ -24,7 +24,12 @@
                     <td><%= agent.patient %></td>
                     <td><%= agent.Esp %></td>
                     <td><%= agent.room %></td>
-                    <td><%= agent.date.split(' ')[0].replaceAll('-','/') %> as <%= agent.date.split(' ')[1].replace(":00.000", "") %></td>
+                    <td><%= agent.date.split(' ')[0].replaceAll('-','/') %> as <%= agent.date.split(' ')[1].replace(":00.000", "") %>
+                    <form action="/delete" method="post" class="delete-form">
+                        <input type="text" value="<%= agent.room %>" name="room" id="room" hidden>
+                        <input type="text" value="<%= agent.date %>" name="date" id="date" hidden>
+                        <button class="submit delete-td"> X </button>
+                    </form></td>
                 </tr>
             <% }) %>
         </table>
