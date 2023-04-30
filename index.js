@@ -102,8 +102,6 @@ app.post('/register', (req, res) => {
     const BornDate = req.body.bornDate;
     const isMedic = req.body.has_crm == "on" ? true : false;
 
-    console.log(req.body);
-
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, (err, hash) => {
             UserModel.create({
@@ -137,29 +135,43 @@ app.post('/register', (req, res) => {
 
 app.post('/agendamento', (req, res) => {
     const data = req.body;
-    const date = data.date + "T" + data.time + ":00.000Z";
-    UserModel.findOne({ where: { id: data.medic }}).then(medic => {
-        console.log(medic);
-        console.log(req.body);
-        AgentModel.create({
-            medic: req.body.medic,
-            patient: req.body.patient,
-            Esp: medic.Esp,
-            room: req.body.room,
-            date: date,
-        }).then(agent => {
-            res.redirect('/');
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    if(data.room == "" || data.date == "" || data.time == "") {
+        error("Preencha todos os campos");
+    }else{
+        const date = data.date + "T" + data.time + ":00.000Z";
+        UserModel.findOne({ where: { id: data.medic }}).then(medic => {
+            AgentModel.create({
+                medic: req.body.medic,
+                patient: req.body.patient,
+                Esp: medic.Esp,
+                room: req.body.room,
+                date: date,
+            }).then(agent => {
+                res.redirect('/');
+            })
+            .catch(err => {
+                error("sala ocupada nessa data/hora");
+                console.log(err);
+            });
     }).catch(err => {
         console.log(err);
     });
+    }
+    function error(err){
+        UserModel.findAll({
+            raw: true,
+            attributes: ['id', 'Name', 'isMedic'],
+        }).then(results =>{
+            console.log(results);
+            res.render('agendamento', { results: results, errormensage: err });
+        });
+    }
 });
 
 app.post('/edit/profile', (req, res) => {
     let data = req.body;
+
+    console.log(data);
 
     UserModel.update({
         Name: data.name,
@@ -168,7 +180,7 @@ app.post('/edit/profile', (req, res) => {
         CPF: data.cpf,
         RG: data.rg,
         CRM: data.crm,
-        Esp: data.specialization,
+        Esp: data.especializacao,
         BornDate: data.bornDate
     }, {
         where: {
@@ -189,7 +201,8 @@ app.post("/logout", (req, res) => {
 // get
 
 app.get('/login', (req, res) => {
-    res.render('login');
+    const errorMessage = req.flash('error');
+    res.render('login', { error: errorMessage });
 });
 
 app.get('/register', (req, res) => {
@@ -200,10 +213,10 @@ app.get('/', ensureAuthenticated, (req, res) => {
     connection.query(`SELECT * FROM agents where medic = ${req.user.id} or patient = ${req.user.id};`).then(agents => {
         UserModel.findAll({raw: true}).then(users => {
             agents[0].forEach(agent => {
+                agent.Esp = users.find(user => user.id == agent.medic).Esp;
                 agent.medic = users.find(user => user.id == agent.medic).Name;
                 agent.patient = users.find(user => user.id == agent.patient).Name;
             });
-            console.log(agents[0]);
             res.render('home', {agents: agents[0]});
         });
 
@@ -216,12 +229,15 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
     });
 });
 
-app.get('/agendamento', ensureAuthenticated, async (req, res) => {
-    const results = await UserModel.findAll({
+app.get('/agendamento', ensureAuthenticated, (req, res) => {
+    let errormensage = "";
+    UserModel.findAll({
         raw: true,
         attributes: ['id', 'Name', 'isMedic'],
+    }).then(results =>{
+        console.log(results);
+        res.render('agendamento', { results: results, errormensage: errormensage }); 
     });
-    res.render('agendamento', { results });
 });
 
 app.listen( 80 , () => {

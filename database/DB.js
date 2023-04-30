@@ -65,12 +65,14 @@ AgentModel.init({
         allowNull: false
     },
     room: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        primaryKey: true
     },
     date:{
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     }
 }, { sequelize: connection, modelName: 'Agents'});
 

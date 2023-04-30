@@ -211,3 +211,7 @@ tr:hover {
     margin-right: 10px;
   }
 }
+.container p{
+  text-align: center;
+  color: #ff0000;
+}
