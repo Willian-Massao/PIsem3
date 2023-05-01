@@ -163,7 +163,7 @@ input[type="time"] {
 table {
   border-collapse: collapse;
   width: 100%;
-  max-width: 800px;
+  max-width: 960px;
   margin: 15px auto;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
