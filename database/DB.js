@@ -21,6 +21,10 @@ UserModel.init({
         type: Sequelize.STRING,
         allowNull: false
     },
+    Tel:{
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     Address: {
         type: Sequelize.STRING,
         allowNull: false

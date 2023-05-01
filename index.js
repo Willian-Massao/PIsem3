@@ -101,6 +101,7 @@ app.post('/register', (req, res) => {
     const esp = req.body.specialization;
     const BornDate = req.body.bornDate;
     const job = req.body.job;
+    const tel = req.body.tel;
 
     console.log(req.body);
 
@@ -112,6 +113,7 @@ app.post('/register', (req, res) => {
                 Password: hash,
                 Salt: salt,
                 Address: address,
+                Tel: tel,
                 CPF: cpf,
                 RG: rg,
                 CRM: crm,
