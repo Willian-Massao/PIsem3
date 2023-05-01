@@ -100,7 +100,9 @@ app.post('/register', (req, res) => {
     const crm = req.body.crm;
     const esp = req.body.specialization;
     const BornDate = req.body.bornDate;
-    const isMedic = req.body.has_crm == "on" ? true : false;
+    const job = req.body.job;
+
+    console.log(req.body);
 
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, (err, hash) => {
@@ -115,7 +117,7 @@ app.post('/register', (req, res) => {
                 CRM: crm,
                 Esp: esp,
                 BornDate: BornDate,
-                isMedic: isMedic
+                Job: job
             }).then(user => {
                 req.login(user, (err) => {
                     if (err) {
@@ -135,12 +137,22 @@ app.post('/register', (req, res) => {
 
 app.post('/agendamento', (req, res) => {
     const data = req.body;
+
+    console.log(data);
+    let secretary;
+    if(!data.hasOwnProperty("secretary")){
+        secretary = null;
+    }else{
+        secretary = req.body.secretary;
+    }
+
     if(data.room == "" || data.date == "" || data.time == "") {
         error("Preencha todos os campos");
     }else{
         const date = data.date + "T" + data.time + ":00.000Z";
         UserModel.findOne({ where: { id: data.medic }}).then(medic => {
             AgentModel.create({
+                Secretary: secretary,
                 medic: req.body.medic,
                 patient: req.body.patient,
                 Esp: medic.Esp,
@@ -151,19 +163,17 @@ app.post('/agendamento', (req, res) => {
             })
             .catch(err => {
                 error("sala ocupada nessa data/hora");
-                console.log(err);
             });
     }).catch(err => {
-        console.log(err);
+        error("erro ao criar agendamento");
     });
     }
     function error(err){
         UserModel.findAll({
             raw: true,
-            attributes: ['id', 'Name', 'isMedic'],
+            attributes: ['id', 'Name', 'Job'],
         }).then(results =>{
-            console.log(results);
-            res.render('agendamento', { results: results, errormensage: err });
+            res.render('agendamento', { results: results, errormensage: err, myid: req.user.id });
         });
     }
 });
@@ -224,12 +234,13 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/', ensureAuthenticated, (req, res) => {
-    connection.query(`SELECT * FROM agents where medic = ${req.user.id} or patient = ${req.user.id};`).then(agents => {
+    connection.query(`SELECT * FROM agents where medic = ${req.user.id} or patient = ${req.user.id} or Secretary = ${req.user.id};`).then(agents => {
         UserModel.findAll({raw: true}).then(users => {
             agents[0].forEach(agent => {
                 agent.Esp = users.find(user => user.id == agent.medic).Esp;
                 agent.medic = users.find(user => user.id == agent.medic).Name;
                 agent.patient = users.find(user => user.id == agent.patient).Name;
+                agent.Secretary == null ? agent.Secretary = "Nenhum" : agent.Secretary = users.find(user => user.id == agent.Secretary).Name;
             });
             res.render('home', {agents: agents[0]});
         });
@@ -247,10 +258,10 @@ app.get('/agendamento', ensureAuthenticated, (req, res) => {
     let errormensage = "";
     UserModel.findAll({
         raw: true,
-        attributes: ['id', 'Name', 'isMedic'],
+        attributes: ['id', 'Name', 'Job'],
     }).then(results =>{
         console.log(results);
-        res.render('agendamento', { results: results, errormensage: errormensage }); 
+        res.render('agendamento', { results: results, errormensage: errormensage, myid: req.user.id });
     });
 });
 

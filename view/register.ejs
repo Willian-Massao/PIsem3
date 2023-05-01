@@ -47,25 +47,43 @@
             <input type="text" id="specialization" name="specialization">
           </div>
           <div class="form-group">
-              <label for="has_crm">é medico?</label>
-              <input type="checkbox" id="has_crm" name="has_crm">
+            <fieldset id="fieldset">
+              <legend>Profissão</legend>
+              <div>
+                <input type="radio" id="medic" name="job" value="medic">
+                <label for="medic">Medico</label>
+              </div>
+              <div>
+                <input type="radio" id="pacient" name="job" value="pacient">
+                <label for="pacient">Paciente</label>
+              </div>
+              <div>
+                <input type="radio" id="secretary" name="job" value="secretary">
+                <label for="secretary">Secretaria</label>
+              </div>
+            </fieldset>
             </div>
           <button type="submit">Cadastrar</button>
         </form>
       </div>
       <script>
-          const has_crm = document.querySelector('#has_crm');
+          const medic = document.querySelector('#medic');
+          const pacient = document.querySelector('#pacient');
+          const secretary = document.querySelector('#secretary');
+
+          const fieldset = document.querySelector('#fieldset');
+
           const crm = document.querySelector('#crm');
           const specialization = document.querySelector('#specialization');
           let container = document.getElementsByClassName("container")
-          has_crm.addEventListener('change', () => {
-              if (has_crm.checked) {
+          fieldset.addEventListener('change', () => {
+            if (medic.checked) {
               crm.parentElement.hidden = false;
               specialization.parentElement.hidden = false;
-              } else {
+            } else if(pacient.checked || secretary.checked){
               crm.parentElement.hidden = true;
               specialization.parentElement.hidden = true;
-              }
+            }
           });
       </script>
     </main>

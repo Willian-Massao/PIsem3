@@ -45,13 +45,17 @@ UserModel.init({
         type: Sequelize.STRING,
         allowNull: true
     },
-    isMedic: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false
+    Job: {
+        type: Sequelize.STRING,
+        allowNull: true
     }
 }, { sequelize: connection, modelName: 'Users'});
 
 AgentModel.init({
+    Secretary: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     medic: {
         type: Sequelize.STRING,
         allowNull: false

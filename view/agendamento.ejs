@@ -11,11 +11,26 @@
         <h1>Cadastro</h1>
         <p><%= errormensage %></p>
         <form action="/agendamento" method="post">
+          <% results.forEach(user => {if(user.id == myid ){ %>
+            <% if(user.Job == "secretary"){ %>
+                <div class="listbox" id="secretary" style="visibility: visible;">
+                  <label for="secretary">Secretaria:</label>
+                  <select name="secretary" id="listbox">
+                    <% results.forEach(user => { %>
+                      <% if(user.Job == "secretary"){ %>
+                        <option value="<%= user.id %>"> <%= user.Name %> </option>  
+                      <% } %>
+                    <% }) %>
+                  </select>
+                </div>
+              <% } %>
+            <% } %>
+          <% }); %>
           <div class="listbox">
             <label for="medic">Medico:</label>
             <select name="medic" id="listbox">
               <% results.forEach(user => { %>
-                <% if(user.isMedic == 1){ %>
+                <% if(user.Job == "medic"){ %>
                   <option value="<%= user.id %>"> <%= user.Name %> </option>  
                 <% } %>
               <% }) %>
@@ -25,7 +40,7 @@
             <label for="patient">Paciente:</label>
             <select name="patient" id="patient">
               <% results.forEach(user => { %>
-                <% if(user.isMedic == 0){ %>
+                <% if(user.Job == "pacient"){ %>
                   <option value="<%= user.id %>"> <%= user.Name %> </option>  
                 <% } %>
               <% }) %>

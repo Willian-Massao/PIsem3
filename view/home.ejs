@@ -12,6 +12,7 @@
     <main>
         <table>
             <tr>
+                <th>Secretaria</th>
                 <th>Medico</th>
                 <th>Paciente</th>
                 <th>Especialização</th>
@@ -20,11 +21,12 @@
             </tr>
             <% agents.forEach(agent => { %>
                 <tr>
-                    <td><%= agent.medic %></td>
-                    <td><%= agent.patient %></td>
-                    <td><%= agent.Esp %></td>
-                    <td><%= agent.room %></td>
-                    <td><%= agent.date.split(' ')[0].replaceAll('-','/') %> as <%= agent.date.split(' ')[1].replace(":00.000", "") %>
+                    <td><span><%= agent.Secretary %></span></td>
+                    <td><span><%= agent.medic %></span></td>
+                    <td><span><%= agent.patient %></span></td>
+                    <td><span><%= agent.Esp %></span></td>
+                    <td><span><%= agent.room %></span></td>
+                    <td><span><%= agent.date.split(' ')[0].replaceAll('-','/') %> as <%= agent.date.split(' ')[1].replace(":00.000", "") %></span>
                     <form action="/delete" method="post" class="delete-form">
                         <input type="text" value="<%= agent.room %>" name="room" id="room" hidden>
                         <input type="text" value="<%= agent.date %>" name="date" id="date" hidden>

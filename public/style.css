@@ -230,3 +230,7 @@ tr:hover .delete-td{
 .delete-form{
   display: inline;
 }
+
+span{
+  display: inline-block;
+}
