@@ -1,4 +1,7 @@
 /*jshint esversion: 6 */
+require('sqlite3');
+require('ejs');
+const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -73,8 +76,8 @@ connection.authenticate()
 
 // Configuração do express
 app.set('view engine', 'ejs');
-app.set('views', './view');
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.urlencoded({ extended: false }));
